@@ -6,29 +6,21 @@ function setWeatherData(data) {
     const hourly_data = data.hourly;
     const current = data.current;
 
-    // for of loop to loop
-
-    // for (let elem in daily_data) {
-    //     const textP = document.createElement("p");
-    //     const temperatureObject = elem.temp;
-    //     textP.textContent = `Time: ${elem.dt}, TempObject: ${temperatureObject}`;
-    //     // added the element to the Div structure.
-    //     divElem.appendChild(textP);
-    // }
-
     // Heading of the Page displaying the city chosen
-    const headerElem = document.createElement("h1");
+    const headerElem = document.createElement("h2");
     headerElem.innerHTML = data.timezone;
     divElem.appendChild(headerElem);
 
     // Current Weather Data
-    const titleCurrent = document.createElement("h2");
+    const titleCurrent = document.createElement("h3");
     titleCurrent.innerHTML = "Current Weather Data";
     divElem.appendChild(titleCurrent);
 
     const ulTagCurrent = document.createElement("ul");
+    ulTagCurrent.classList.add("list-group");
     const currentObj = current;
     const liTag = document.createElement("li");
+    liTag.classList.add("list-group-item");
     let date = new Date(0);
     // I have to set it as such otherwise sets 01.01.1970 date and time 
     date.setUTCSeconds(currentObj.dt);
@@ -39,14 +31,16 @@ function setWeatherData(data) {
     divElem.appendChild(ulTagCurrent);
 
     // Daily Data Weather Forecast
-    const titleDaily = document.createElement("h2");
+    const titleDaily = document.createElement("h3");
     titleDaily.innerHTML = "Daily Weather Forecast Data";
     divElem.appendChild(titleDaily);
 
     const ulTagDaily = document.createElement("ul");
+    ulTagDaily.classList.add("list-group");
     for (let i = 0; i < daily_data.length; i++) {
         const currentObj = daily_data[i];
         const liTag = document.createElement("li");
+        liTag.classList.add("list-group-item");
         let date = new Date(0);
         // I have to set it as such otherwise sets 01.01.1970 date and time 
         date.setUTCSeconds(currentObj.dt);
@@ -58,14 +52,16 @@ function setWeatherData(data) {
     }
 
     // Hourly Data Weather Forecast 
-    const titleHourly = document.createElement("h2");
+    const titleHourly = document.createElement("h3");
     titleHourly.innerHTML = "Hourly Weather Forecast Data";
     divElem.appendChild(titleHourly);
 
     const ulTagHourly = document.createElement("ul");
+    ulTagHourly.classList.add("list-group");
     for (let i = 0; i < hourly_data.length; i++) {
         const currentObj = hourly_data[i];
         const liTag = document.createElement("li");
+        liTag.classList.add("list-group-item")
         let date = new Date(0);
         // I have to set it as such otherwise sets 01.01.1970 date and time 
         date.setUTCSeconds(currentObj.dt);
@@ -86,3 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }        
     })
 });
+
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.command === "next-city") {
+        setTimeout(() => {
+            document.location.reload(true);
+          }, 1000);
+    }
+});
+

@@ -17,11 +17,10 @@ const api_key_hourly_data = "f0c8b7f1b984af4a4155a856d3876334";
 const limit = 5;
 
 // converting city name into a geolocation coords to feed into openweather api
-let cityName = "London";
 
 // Using Fetch API provides a JavaScript interface for accessing and manipulating parts of the HTTP pipeline, such as requests and responses. It also provides a global fetch() method that provides an easy, logical way to fetch resources asynchronously across the network.
 
-async function fetchGeoLocation(api_key, limit, cityName) {
+async function fetchGeoLocation(api_key, limit, cityName="London") {
     const endpoint = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${api_key}`;
 
     const response = await fetch(endpoint);
@@ -82,7 +81,7 @@ async function fetchWeatherForecast(api_key, geoLocationCity) {
 // }
 
 // Main Wrapper Functiom
-async function storeWeatherData() {
+async function storeWeatherData(cityName="Moscow") {
     try {
         const geoLocationCity = await fetchGeoLocation(api_key, limit, cityName).then((x) => {
             // returned is an array of objects. hence grabbing 0idx object
@@ -105,4 +104,14 @@ async function storeWeatherData() {
 }
 
 // Execute the 'storeWeatherData' function when the extension is installed
-chrome.runtime.onInstalled.addListener(storeWeatherData);
+chrome.runtime.onInstalled.addListener(storeWeatherData());
+
+
+// request is an object
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.command === "next-city") {
+        storeWeatherData(request.city);
+    }
+    sendResponse({message: "Sup Bro!!!"});
+    return true;
+});
